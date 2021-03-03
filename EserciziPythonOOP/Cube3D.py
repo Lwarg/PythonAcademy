@@ -5,9 +5,17 @@ import math
 
 class Cube3D:
 
+    #   z
+    #   ^
+    #   .....
+    #   |   |
+    #   o....  >x    
+    #
+    
+
     def __init__(self, origin = Punto3D(0,0,0), edge=1):
-        self.origin = origin
-        self.edge = edge
+        self.origin = origin  # vertice in basso a sinistra (punto con i valori x,y,z più bassi)
+        self.edge = edge  # lunghezza lato
     
     def volume(self):
         return edge**3
@@ -34,6 +42,8 @@ class Cube3D:
             return False
 
     def contains_point(self, point):
+        # un punto sta all'interno del cubo se i suoi valori x,y,z sono maggiori di quelli dell'origine ma non troppo
+        # (per troppo si intende più del lato del cubo)
         dx = point.x - self.origin.x
         dy = point.y - self.origin.y
         dz = point.z - self.origin.z
@@ -43,12 +53,15 @@ class Cube3D:
             return True
         
     def contains_segment(self, segment):
+        # un segmento è contenuto in un cubo se e solo se i suoi estremi sono contenuti nel cubo
         if self.contains_point(segment.pointA) and self.contains_point(segment.pointB):
             return True
         else:
             return False
     
     def intersect_segment(self, segment):
+        # funzone per identificare un segmento che interseca ma non è contenuto interamente nel cubo
+        # un segmento non interseca un cubo se i suoi estremi sono entrambi troppo "sotto, sopra, destra, sinistra, davanti o dietro"
         dxA = segment.pointA.z - self.origin.x
         dyA = segment.pointA.z - self.origin.y
         dzA = segment.pointA.z - self.origin.z
@@ -68,7 +81,7 @@ class Cube3D:
             if A[i]==B[i]:
                 flag = True
 
-        if self.contains_point(segment.pointA) and self.contains_point(segment.pointB):   
+        if self.contains_point(segment.pointA) and self.contains_point(segment.pointB):   # escludo il caso interamente contenuto
             return False     
         elif self.contains_point(segment.pointA) and not self.contains_point(segment.pointB):
             return True
@@ -80,6 +93,7 @@ class Cube3D:
             return True
 
     def vertici(self):
+        # restituisce una lista di 8 punti (gli 8 vertici del cubo)
         O0 = self.origin
         O1 = Punto3D(self.origin.x + self.edge, self.origin.y            , self.origin.z)
         O2 = Punto3D(self.origin.x + self.edge, self.origin.y + self.edge, self.origin.z)
@@ -89,6 +103,7 @@ class Cube3D:
         O6 = Punto3D(self.origin.x + self.edge, self.origin.y + self.edge, self.origin.z + self.edge)
         O7 = Punto3D(self.origin.x            , self.origin.y + self.edge, self.origin.z + self.edge)
         return [O0, O1, O2, O3, O4, O5, O6, O7]
+
     def intersect_cube(self, cube):
         # se due cubi si intersecano, almeno uno dei vertici di un cubo sta dentro l'altro cubo
         flag = False

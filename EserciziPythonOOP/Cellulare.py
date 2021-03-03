@@ -12,7 +12,8 @@ class Cellulare:
         # aumenta il numero di chiamate e diminuisce la carica
         self.numeroChiamate += 1
         count = 0
-        while self.carica > 0.2/60 and minutiDurata > 0:
+        # chiama finchè non esaurisci il credito o i minuti di chiamata (aggiornamento ogni secondo)
+        while self.carica > 0.2/60 and minutiDurata > 0: 
             self.carica -= 0.2/60
             minutiDurata -= 1/60
             count += 1/60
